@@ -18,6 +18,14 @@ from model.Vectoriel import Vectoriel
 from model.ModeleLangue import ModeleLangue
 from model.Okapi import Okapi
 from sklearn.model_selection import train_test_split
+from evaluation.QueryParser import QueryParser
+from evaluation.EvalPrecision import EvalPrecision
+from evaluation.EvalFmeasure import EvalFmeasure
+from evaluation.EvalAvgP import EvalAvgP
+from evaluation.EvalReciprocalRank import EvalReciprocalRank
+from evaluation.EvalNDCG import EvalNDCG
+
+
 
 
 docs = ["the new home has been saled on top forecasts",
@@ -33,10 +41,7 @@ pt = PorterStemmer()
 
 d = pt.getTextRepresentation(docs[0])
 
-text_file = open("data/cacm/cacmShort-good.txt").read()
-
-
-
+text_file = open("data/cacm/cacm.txt").read()
 p = Parser()
 p.buildDocCollectionRegex(text_file)
 
@@ -49,4 +54,23 @@ doc_tfidf = indexer.getTfIDFsForStem("comput")
 w = Weighter5(indexer)
 
 m = ModeleLangue(indexer)
-print(m.getRanking("maman computation programming"))
+#print(m.getRanking("maman computation programming"))
+o = Okapi(indexer)
+v = Vectoriel(indexer, w)
+
+
+qry = open("data/cacm/cacm.qry").read()
+rel = open("data/cacm/cacm.rel").readlines()
+qp = QueryParser()
+qp.buildQueryCollectionRegex(qry, rel)
+
+query = qp.collection[30]
+ranking = o.getRanking(query.W)
+liste = list(ranking.keys())
+e_p = EvalPrecision()
+e_f = EvalFmeasure()
+e_a = EvalAvgP()
+e_r = EvalReciprocalRank()
+e_n = EvalNDCG()
+print(e_n.evalQuery(liste, query))
+
