@@ -24,6 +24,8 @@ from evaluation.EvalFmeasure import EvalFmeasure
 from evaluation.EvalAvgP import EvalAvgP
 from evaluation.EvalReciprocalRank import EvalReciprocalRank
 from evaluation.EvalNDCG import EvalNDCG
+from evaluation.EvalIRModel import EvalIRModel
+
 
 
 
@@ -64,13 +66,19 @@ rel = open("data/cacm/cacm.rel").readlines()
 qp = QueryParser()
 qp.buildQueryCollectionRegex(qry, rel)
 
-query = qp.collection[30]
+query = qp.collection[40]
 ranking = o.getRanking(query.W)
 liste = list(ranking.keys())
 e_p = EvalPrecision()
 e_f = EvalFmeasure()
 e_a = EvalAvgP()
 e_r = EvalReciprocalRank()
-e_n = EvalNDCG()
+e_n = EvalNDCG(-1)
 print(e_n.evalQuery(liste, query))
+
+models = [Okapi(indexer), Vectoriel(indexer, w)]
+measures = [EvalPrecision(), EvalNDCG()]
+queries = [qp.collection[30], qp.collection[40]]
+e = EvalIRModel()
+print(e.evalModel(models, measures, queries))
 

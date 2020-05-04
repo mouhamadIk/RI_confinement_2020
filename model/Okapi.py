@@ -11,8 +11,12 @@ from utils.TextRepresenter import PorterStemmer
 import numpy as np 
   
 class Okapi(IRModel):
+    def __init__(self, indexer, k1 = 1.2, b = 0.75):
+        super().__init__(indexer)
+        self.k1 = k1
+        self.b = b
     
-    def getScores(self,query, k1 = 1.2, b = 0.75):            
+    def getScores(self,query):            
         score = {}
         pt = PorterStemmer().getTextRepresentation(query)
         avgdl = np.mean([sum(doc.values()) for doc in self.indexer.index.values()])
@@ -23,9 +27,9 @@ class Okapi(IRModel):
                 for doc in self.indexer.index_inv[stem]:
                     tf = self.indexer.index_inv[stem][doc]
                     if doc in score:
-                        score[doc] += idf*tf/(tf+k1*(1+b*(-1+sum(self.indexer.index[doc].values())/avgdl)))
+                        score[doc] += idf*tf/(tf+self.k1*(1+self.b*(-1+sum(self.indexer.index[doc].values())/avgdl)))
                     else:
-                        score[doc] = idf*tf/(tf+k1*(1+b*(-1+sum(self.indexer.index[doc].values())/avgdl)))
+                        score[doc] = idf*tf/(tf+self.k1*(1+self.b*(-1+sum(self.indexer.index[doc].values())/avgdl)))
                         
         return score
         

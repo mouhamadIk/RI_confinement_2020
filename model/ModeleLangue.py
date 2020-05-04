@@ -8,9 +8,8 @@ Created on Tue Feb 18 14:56:02 2020
 
 from model.IRModel import IRModel
 from utils.TextRepresenter import PorterStemmer
-import numpy as np 
   
-class ModeleLangue(IRModel): 
+class ModeleLangue(IRModel):
     
     def getScores(self,query):            
         score = {}

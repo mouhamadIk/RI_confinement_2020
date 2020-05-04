@@ -9,20 +9,23 @@ from evaluation.EvalMesure import EvalMesure
 import numpy as np
 
 class EvalNDCG(EvalMesure):
+    def __init__(self, p = 10):
+        self.p = p
     
-    def evalQuery(self, liste, query, p = 10):
-        if p > len(liste):
+    def evalQuery(self, liste, query):
+        p = self.p
+        if self.p > len(liste) or self.p < 1:
             p = len(liste)
         dcgp = 0
-        idcgp = 0
-        i = 0
+        idcgp = 0        
+        
         for k in range(p):
+            i = 0
             if liste[k] in query.P:
                 dcgp += 1 / np.log2(k+2)
                 idcgp += 1 / np.log2(i+2)
                 i += 1
-        for k in range(i,p):
-            idcgp += 1 / np.log2(i+2)
-            
-        return dcgp/idcgp 
-        
+        if idcgp == 0:
+            return 0
+        else:
+            return dcgp/idcgp
