@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Feb  7 16:55:45 2020
+Created on Wed May  6 17:47:25 2020
 
-@author: 3870476
+@author: mouha
 """
-
 from utils.TextRepresenter import PorterStemmer
 from indexation.Parser import Parser
 from indexation.IndexerSimple import IndexerSimple
@@ -17,6 +15,7 @@ from weighter.Weighter5 import Weighter5
 from model.Vectoriel import Vectoriel
 from model.ModeleLangue import ModeleLangue
 from model.Okapi import Okapi
+from sklearn.model_selection import train_test_split
 from evaluation.QueryParser import QueryParser
 from evaluation.EvalPrecision import EvalPrecision
 from evaluation.EvalRappel import EvalRappel
@@ -26,50 +25,37 @@ from evaluation.EvalReciprocalRank import EvalReciprocalRank
 from evaluation.EvalNDCG import EvalNDCG
 from evaluation.EvalIRModel import EvalIRModel
 
+#Heike test
 
-text_file = open("data/cacm/cacm.txt").read()
+text_file = open("data/cacm/cacmShort_eike.txt").read()
 p = Parser()
 p.buildDocCollectionRegex(text_file)
 
 indexer = IndexerSimple()
 indexer.indexation(p.collection)
 
-w = Weighter5(indexer)
+qry = open("data/cacm/cacmShort_eike.qry").read()
+rel = open("data/cacm/cacmShort_eike.rel").readlines()
+qp = QueryParser()
+qp.buildQueryCollectionRegex(qry, rel)
+
+w = Weighter1(indexer)
 
 m = ModeleLangue(indexer)
 #print(m.getRanking("maman computation programming"))
 o = Okapi(indexer)
-v = Vectoriel(indexer, w)
+v = Vectoriel(indexer, w, True)
 
-
-qry = open("data/cacm/cacm.qry").read()
-rel = open("data/cacm/cacm.rel").readlines()
-qp = QueryParser()
-qp.buildQueryCollectionRegex(qry, rel)
-
-query = qp.collection[40]
-ranking = o.getRanking(query.W)
-liste = list(ranking.keys())
-
-e_p = EvalPrecision()
-e_r = EvalRappel()
-e_f = EvalFmeasure()
+e_p = EvalPrecision(-1)
+e_r = EvalRappel(-1)
+e_f = EvalFmeasure(-1)
 e_a = EvalAvgP()
 e_rr = EvalReciprocalRank()
-e_n = EvalNDCG()
-print(e_n.evalQuery(liste, query))
+e_n = EvalNDCG(-1)
+measures = [e_p, e_r, e_f, e_a, e_rr, e_n]
 
-models = [m, o, v]
+models = [v, o, m]
 measures = [e_p, e_r, e_f, e_a, e_rr, e_n]
 queries = list(qp.collection.values())
 e = EvalIRModel()
-res = e.evalModel(models, measures, queries)
-
-t_test = e.t_test(o, v, e_f, queries)
-
-#e.learnModelLangue(indexer, queries)
-
-best_k1, best_b, grid_okapi = e.learnOkapi_grid(indexer, queries)
-# k1 = 3 et b = 0.6
-
-
+res = e.evalModel(models, measures, [qp.collection[1]])

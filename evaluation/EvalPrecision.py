@@ -12,6 +12,8 @@ class EvalPrecision(EvalMesure):
         self.k = k
     
     def evalQuery(self, liste, query):
+        if not query.P or not liste:
+            return 0
         k = self.k
         if self.k > len(liste) or self.k < 1:
             k = len(liste)

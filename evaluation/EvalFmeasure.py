@@ -9,11 +9,13 @@ from evaluation.EvalMesure import EvalMesure
 
 class EvalFmeasure(EvalMesure):
     
-    def __init__(self, k = 10, b =1):
+    def __init__(self, k = 10, b = 1):
         self.k = k
         self.b = b
     
     def evalQuery(self, liste, query):
+        if not query.P or not liste:
+            return 0
         k = self.k
         b = self.b
         if self.k > len(liste) or self.k < 1:

@@ -1,0 +1,18 @@
+.I 1
+.W
+ text1 
+.N
+ 1. Richard Alexander, Comp Serv, Langmuir Lab (TSS)
+  
+.I 2
+.W
+ text1 text2
+.N
+ 2. Richard Alexander, Comp Serv, Langmuir Lab (author = Pooch or Prieve)
+ 
+.I 3
+.W
+ bla
+.N
+ 3. Donna Bergmark, Comp Serv, Uris Hall (intermed lang)
+ 

@@ -10,6 +10,12 @@ from model.IRModel import IRModel
 from utils.TextRepresenter import PorterStemmer
   
 class ModeleLangue(IRModel):
+    def __init__(self, indexer, lbda):
+        self.indexer = indexer
+        self.lbda = lbda 
+        
+    def __init__(self, indexer):
+        self.indexer = indexer
     
     def getScores(self,query):            
         score = {}

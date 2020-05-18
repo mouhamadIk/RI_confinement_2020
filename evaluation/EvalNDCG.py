@@ -13,19 +13,23 @@ class EvalNDCG(EvalMesure):
         self.p = p
     
     def evalQuery(self, liste, query):
+        if not query.P or not liste:
+            return 0
         p = self.p
         if self.p > len(liste) or self.p < 1:
             p = len(liste)
+        
         dcgp = 0
         idcgp = 0        
+        i = 0
         
         for k in range(p):
-            i = 0
             if liste[k] in query.P:
                 dcgp += 1 / np.log2(k+2)
                 idcgp += 1 / np.log2(i+2)
                 i += 1
+        
         if idcgp == 0:
             return 0
-        else:
-            return dcgp/idcgp
+        
+        return dcgp/idcgp

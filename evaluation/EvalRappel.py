@@ -7,11 +7,13 @@ Created on Fri May  1 14:51:25 2020
 
 from evaluation.EvalMesure import EvalMesure
 
-class EvalPrecision(EvalMesure):
+class EvalRappel(EvalMesure):
     def __init__(self, k = 10):
         self.k = k
     
     def evalQuery(self, liste, query):
+        if not query.P or not liste:
+            return 0
         k = self.k
         if self.k > len(liste) or self.k < 1:
             k = len(liste)
